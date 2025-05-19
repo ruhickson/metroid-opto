@@ -1,0 +1,194 @@
+// Canvas setup
+const canvas = document.getElementById('map-canvas');
+const ctx = canvas.getContext('2d');
+const infoPanel = document.getElementById('info-panel');
+
+// View state
+let scale = 0.1;
+let offsetX = 0;
+let offsetY = 0;
+let isDragging = false;
+let lastX = 0;
+let lastY = 0;
+
+// Colors
+const COLORS = {
+    rooms: {
+        Crateria: '#4a90e2',
+        Brinstar: '#50e3c2',
+        Norfair: '#e35050',
+        WreckedShip: '#e3c250',
+        Maridia: '#50e350',
+        Tourian: '#e350e3'
+    },
+    items: {
+        major: '#ffd700',
+        missile: '#ff6b6b',
+        energy: '#4caf50',
+        reserve: '#2196f3',
+        powerBomb: '#9c27b0',
+        superMissile: '#ff9800'
+    }
+};
+
+// Initialize canvas size
+function resizeCanvas() {
+    canvas.width = canvas.parentElement.clientWidth;
+    canvas.height = canvas.parentElement.clientHeight;
+    draw();
+}
+
+// Transform coordinates from game space to screen space
+function transformCoords(x, y) {
+    return {
+        x: (x * scale) + offsetX + canvas.width / 2,
+        y: (y * scale) + offsetY + canvas.height / 2
+    };
+}
+
+// Draw a room
+function drawRoom(room) {
+    const coords = room.geometry.coordinates[0].map(([x, y]) => transformCoords(x, y));
+    
+    ctx.beginPath();
+    ctx.moveTo(coords[0].x, coords[0].y);
+    for (let i = 1; i < coords.length; i++) {
+        ctx.lineTo(coords[i].x, coords[i].y);
+    }
+    ctx.closePath();
+    
+    const area = room.properties.area;
+    ctx.fillStyle = COLORS.rooms[area] || '#666';
+    ctx.fill();
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+}
+
+// Draw an item
+function drawItem(item, type) {
+    const [x, y] = item.geometry.coordinates;
+    const coords = transformCoords(x, y);
+    
+    ctx.beginPath();
+    ctx.arc(coords.x, coords.y, 3, 0, Math.PI * 2);
+    ctx.fillStyle = COLORS.items[type] || '#fff';
+    ctx.fill();
+}
+
+// Check if a point is inside a polygon
+function pointInPolygon(point, polygon) {
+    let inside = false;
+    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+        const xi = polygon[i][0], yi = polygon[i][1];
+        const xj = polygon[j][0], yj = polygon[j][1];
+        
+        const intersect = ((yi > point[1]) !== (yj > point[1]))
+            && (point[0] < (xj - xi) * (point[1] - yi) / (yj - yi) + xi);
+        if (intersect) inside = !inside;
+    }
+    return inside;
+}
+
+// Find room at coordinates
+function findRoomAt(x, y) {
+    const gameCoords = [
+        (x - offsetX - canvas.width / 2) / scale,
+        (y - offsetY - canvas.height / 2) / scale
+    ];
+    
+    return rooms.features.find(room => {
+        const polygon = room.geometry.coordinates[0];
+        return pointInPolygon(gameCoords, polygon);
+    });
+}
+
+// Draw everything
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Draw rooms
+    rooms.features.forEach(drawRoom);
+    
+    // Draw items
+    if (majorItems && majorItems.features) {
+        majorItems.features.forEach(item => drawItem(item, 'major'));
+    }
+    if (missiles && missiles.features) {
+        missiles.features.forEach(item => drawItem(item, 'missile'));
+    }
+    if (energyTanks && energyTanks.features) {
+        energyTanks.features.forEach(item => drawItem(item, 'energy'));
+    }
+    if (reserveTanks && reserveTanks.features) {
+        reserveTanks.features.forEach(item => drawItem(item, 'reserve'));
+    }
+    if (powerBombs && powerBombs.features) {
+        powerBombs.features.forEach(item => drawItem(item, 'powerBomb'));
+    }
+    if (superMissiles && superMissiles.features) {
+        superMissiles.features.forEach(item => drawItem(item, 'superMissile'));
+    }
+}
+
+// Event listeners
+canvas.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    lastX = e.clientX;
+    lastY = e.clientY;
+});
+
+canvas.addEventListener('mousemove', (e) => {
+    if (isDragging) {
+        offsetX += e.clientX - lastX;
+        offsetY += e.clientY - lastY;
+        lastX = e.clientX;
+        lastY = e.clientY;
+        draw();
+    }
+    
+    const room = findRoomAt(e.clientX, e.clientY);
+    if (room) {
+        infoPanel.style.display = 'block';
+        infoPanel.innerHTML = `
+            <h3>${room.properties.name}</h3>
+            <p>Area: ${room.properties.area}</p>
+            <a href="${room.properties.link}" target="_blank">View on Wiki</a>
+        `;
+    } else {
+        infoPanel.style.display = 'none';
+    }
+});
+
+canvas.addEventListener('mouseup', () => {
+    isDragging = false;
+});
+
+canvas.addEventListener('mouseleave', () => {
+    isDragging = false;
+    infoPanel.style.display = 'none';
+});
+
+// Zoom controls
+document.getElementById('zoom-in').addEventListener('click', () => {
+    scale *= 1.2;
+    draw();
+});
+
+document.getElementById('zoom-out').addEventListener('click', () => {
+    scale /= 1.2;
+    draw();
+});
+
+document.getElementById('reset-view').addEventListener('click', () => {
+    scale = 0.1;
+    offsetX = 0;
+    offsetY = 0;
+    draw();
+});
+
+// Handle window resize
+window.addEventListener('resize', resizeCanvas);
+
+// Initial setup
+resizeCanvas(); 
