@@ -4,12 +4,18 @@ const ctx = canvas.getContext('2d');
 const infoPanel = document.getElementById('info-panel');
 
 // View state
-let scale = 0.1;
+let scale = 1;
 let offsetX = 0;
 let offsetY = 0;
 let isDragging = false;
 let lastX = 0;
 let lastY = 0;
+
+// Coordinate bounds
+let minX = Infinity;
+let maxX = -Infinity;
+let minY = Infinity;
+let maxY = -Infinity;
 
 // Colors
 const COLORS = {
@@ -31,18 +37,67 @@ const COLORS = {
     }
 };
 
-// Initialize canvas size
+// Calculate coordinate bounds
+function calculateBounds() {
+    // Reset bounds
+    minX = Infinity;
+    maxX = -Infinity;
+    minY = Infinity;
+    maxY = -Infinity;
+
+    // Check room coordinates
+    rooms.features.forEach(room => {
+        room.geometry.coordinates[0].forEach(([x, y]) => {
+            minX = Math.min(minX, x);
+            maxX = Math.max(maxX, x);
+            minY = Math.min(minY, y);
+            maxY = Math.max(maxY, y);
+        });
+    });
+
+    // Check item coordinates
+    [majorItems, missiles, energyTanks, reserveTanks, powerBombs, superMissiles].forEach(items => {
+        if (items && items.features) {
+            items.features.forEach(item => {
+                const [x, y] = item.geometry.coordinates;
+                minX = Math.min(minX, x);
+                maxX = Math.max(maxX, x);
+                minY = Math.min(minY, y);
+                maxY = Math.max(maxY, y);
+            });
+        }
+    });
+}
+
+// Initialize canvas size and scaling
 function resizeCanvas() {
     canvas.width = canvas.parentElement.clientWidth;
     canvas.height = canvas.parentElement.clientHeight;
+    
+    // Calculate bounds if not already done
+    if (minX === Infinity) {
+        calculateBounds();
+    }
+    
+    // Calculate scale to fit the map
+    const mapWidth = maxX - minX;
+    const mapHeight = maxY - minY;
+    const scaleX = canvas.width / mapWidth;
+    const scaleY = canvas.height / mapHeight;
+    scale = Math.min(scaleX, scaleY) * 0.9; // 90% of the available space
+    
+    // Center the map
+    offsetX = (canvas.width - mapWidth * scale) / 2;
+    offsetY = (canvas.height - mapHeight * scale) / 2;
+    
     draw();
 }
 
 // Transform coordinates from game space to screen space
 function transformCoords(x, y) {
     return {
-        x: (x * scale) + offsetX + canvas.width / 2,
-        y: (y * scale) + offsetY + canvas.height / 2
+        x: (x - minX) * scale + offsetX,
+        y: canvas.height - ((y - minY) * scale + offsetY) // Invert Y coordinate
     };
 }
 
@@ -93,8 +148,8 @@ function pointInPolygon(point, polygon) {
 // Find room at coordinates
 function findRoomAt(x, y) {
     const gameCoords = [
-        (x - offsetX - canvas.width / 2) / scale,
-        (y - offsetY - canvas.height / 2) / scale
+        (x - offsetX) / scale + minX,
+        (canvas.height - y - offsetY) / scale + minY // Invert Y coordinate
     ];
     
     return rooms.features.find(room => {
@@ -181,10 +236,7 @@ document.getElementById('zoom-out').addEventListener('click', () => {
 });
 
 document.getElementById('reset-view').addEventListener('click', () => {
-    scale = 0.1;
-    offsetX = 0;
-    offsetY = 0;
-    draw();
+    resizeCanvas();
 });
 
 // Handle window resize
