@@ -147,9 +147,17 @@ function pointInPolygon(point, polygon) {
 
 // Find room at coordinates
 function findRoomAt(x, y) {
+    // Get canvas position relative to page
+    const rect = canvas.getBoundingClientRect();
+    
+    // Convert mouse coordinates to canvas coordinates
+    const canvasX = x - rect.left;
+    const canvasY = y - rect.top;
+    
+    // Convert canvas coordinates to game coordinates
     const gameCoords = [
-        (x - offsetX) / scale + minX,
-        (canvas.height - y - offsetY) / scale + minY // Invert Y coordinate
+        (canvasX - offsetX) / scale + minX,
+        (canvas.height - canvasY - offsetY) / scale + minY // Invert Y coordinate
     ];
     
     return rooms.features.find(room => {
