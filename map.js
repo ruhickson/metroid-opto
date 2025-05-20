@@ -36,6 +36,11 @@ const COLORS = {
         superMissile: '#ff9800',
         boss: '#ff0000',
         miniBoss: '#ff4500'
+    },
+    route: {
+        line: '#ffffff',
+        point: '#ffffff',
+        current: '#00ff00'
     }
 };
 
@@ -136,20 +141,20 @@ function drawItem(item, type) {
     // Add text label
     ctx.font = '12px Arial';
     ctx.fillStyle = '#fff';
-    ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     
     let label = '';
     if (type === 'major') {
-        // For major items, show the full name
+        // For major items, show the full name to the left
         label = item.properties.item;
+        ctx.textAlign = 'right';
+        ctx.fillText(label, coords.x - 8, coords.y); // 8px to the left
     } else {
-        // For other items, show the first letter
+        // For other items, show the first letter above the dot
         label = item.properties.item.charAt(0);
+        ctx.textAlign = 'center';
+        ctx.fillText(label, coords.x, coords.y - 10);
     }
-    
-    // Draw the text slightly above the dot
-    ctx.fillText(label, coords.x, coords.y - 10);
 }
 
 // Check if a point is inside a polygon
@@ -201,11 +206,65 @@ function drawBoss(boss, isMini = false) {
     // Add text label
     ctx.font = 'bold 14px Arial';
     ctx.fillStyle = '#fff';
-    ctx.textAlign = 'center';
+    ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
     
-    // Draw the boss name above the dot
-    ctx.fillText(boss.properties.boss, coords.x, coords.y - 15);
+    // Draw the boss name to the right of the dot
+    ctx.fillText(boss.properties.boss, coords.x + 8, coords.y); // 8px to the right
+}
+
+// Draw route
+function drawRoute() {
+    if (!route) return;
+
+    // Debug: log route coordinates
+    console.log('Route start:', route.start.position);
+    route.steps.forEach((step, i) => console.log(`Step ${i}:`, step.position));
+
+    ctx.save();
+
+    // Draw thick black outline first
+    ctx.strokeStyle = '#000';
+    ctx.lineWidth = 12;
+    ctx.beginPath();
+    // Start at the first point
+    let coords = transformCoords(route.start.position[0], route.start.position[1]);
+    ctx.moveTo(coords.x, coords.y);
+    // Draw lines through each step in order
+    route.steps.forEach(step => {
+        coords = transformCoords(step.position[0], step.position[1]);
+        ctx.lineTo(coords.x, coords.y);
+    });
+    ctx.stroke();
+
+    // Draw thick magenta line on top
+    ctx.strokeStyle = '#ff00ff';
+    ctx.lineWidth = 6;
+    ctx.beginPath();
+    coords = transformCoords(route.start.position[0], route.start.position[1]);
+    ctx.moveTo(coords.x, coords.y);
+    route.steps.forEach(step => {
+        coords = transformCoords(step.position[0], step.position[1]);
+        ctx.lineTo(coords.x, coords.y);
+    });
+    ctx.stroke();
+
+    // Draw smaller cyan points with black outline at each step and start
+    [route.start].concat(route.steps).forEach((step) => {
+        const coords = transformCoords(step.position[0], step.position[1]);
+        // Black outline
+        ctx.beginPath();
+        ctx.arc(coords.x, coords.y, 6, 0, Math.PI * 2);
+        ctx.fillStyle = '#000';
+        ctx.fill();
+        // Cyan fill
+        ctx.beginPath();
+        ctx.arc(coords.x, coords.y, 4, 0, Math.PI * 2);
+        ctx.fillStyle = '#00ffff';
+        ctx.fill();
+    });
+
+    ctx.restore();
 }
 
 // Draw everything
@@ -242,6 +301,9 @@ function draw() {
     if (miniBosses && miniBosses.features) {
         miniBosses.features.forEach(boss => drawBoss(boss, true));
     }
+
+    // Draw route
+    drawRoute();
 }
 
 // Event listeners
