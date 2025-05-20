@@ -2,7 +2,7 @@ var rooms = {
   "type": "FeatureCollection",
   "features": [
 
-    //-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-Crateria-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
+    //-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-
 
     {
       "type": "Feature",
@@ -355,9 +355,9 @@ var rooms = {
         "type": "Polygon",
         "coordinates": [[
           [8192, -1792],
-          [8448, -1792],
+          [8192, -2048],
           [8448, -2048],
-          [8192, -2048]
+          [8448, -1792]
         ]],
       }
     },
@@ -635,7 +635,7 @@ var rooms = {
       }
     },
 
-    //-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-Wrecked Ship-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
+    //-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-Wrecked Ship-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
 
     {
       "type": "Feature",
@@ -937,7 +937,7 @@ var rooms = {
       }
     },
 
-    //-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-Brinstar-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
+    //-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-Brinstar-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
 
     {
       "type": "Feature",
@@ -1328,7 +1328,7 @@ var rooms = {
     {
       "type": "Feature",
       "properties": {
-        "name": "Spore Sppawn Kihunter Room",
+        "name": "Spore Spawn Kihunter Room",
         "link": "https://wiki.supermetroid.run/Spore_Spawn_Kihunter_Room",
         "area": "Brinstar",
       },
@@ -1963,7 +1963,7 @@ var rooms = {
       }
     },
 
-    //-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-Norfair-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
+    //-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-Norfair-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
 
     {
       "type": "Feature",
@@ -3395,7 +3395,7 @@ var rooms = {
       }
     },
 
-    //-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-Maridia-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
+    //-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-Maridia-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
 
     {
       "type": "Feature",
@@ -4751,6 +4751,109 @@ var rooms = {
       }
     },
 
+    //-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-Elevators-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Green Brinstar Elevator",
+        "link": "#",
+        "area": "Elevator"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [1088, -2304],
+          [1088, -5120],
+          [1216, -5120],
+          [1216, -2304]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Crateria Morph Ball Elevator",
+        "link": "#",
+        "area": "Elevator"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [5440, -4608],
+          [5440, -7168],
+          [5568, -7168],
+          [5568, -4608]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Red Brinstar Elevator",
+        "link": "#",
+        "area": "Elevator"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [8256, -2048],
+          [8256, -6144],
+          [8384, -6144],
+          [8384, -2048]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Forgotten Highway-Maridia Elevator",
+        "link": "#",
+        "area": "Elevator"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [14656, -2816],
+          [14656, -5120],
+          [14784, -5120],
+          [14784, -2816]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Warehouse-Business Center Elevator",
+        "link": "#",
+        "area": "Elevator"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [9280, -9472],
+          [9280, -10240],
+          [9408, -10240],
+          [9408, -9472]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Norfair-Main Hall Elevator",
+        "link": "#",
+        "area": "Elevator"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [11840, -12288],
+          [11840, -13056],
+          [11968, -13056],
+          [11968, -12288]
+        ]]
+      }
+    }
   ]
 
 };

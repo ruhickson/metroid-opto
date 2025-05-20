@@ -33,7 +33,9 @@ const COLORS = {
         energy: '#4caf50',
         reserve: '#2196f3',
         powerBomb: '#9c27b0',
-        superMissile: '#ff9800'
+        superMissile: '#ff9800',
+        boss: '#ff0000',
+        miniBoss: '#ff4500'
     }
 };
 
@@ -185,6 +187,27 @@ function findRoomAt(x, y) {
     });
 }
 
+// Draw a boss or mini-boss
+function drawBoss(boss, isMini = false) {
+    const [x, y] = boss.geometry.coordinates;
+    const coords = transformCoords(x, y);
+    
+    // Draw a larger dot for bosses
+    ctx.beginPath();
+    ctx.arc(coords.x, coords.y, 5, 0, Math.PI * 2);
+    ctx.fillStyle = isMini ? COLORS.items.miniBoss : COLORS.items.boss;
+    ctx.fill();
+    
+    // Add text label
+    ctx.font = 'bold 14px Arial';
+    ctx.fillStyle = '#fff';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    
+    // Draw the boss name above the dot
+    ctx.fillText(boss.properties.boss, coords.x, coords.y - 15);
+}
+
 // Draw everything
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -210,6 +233,14 @@ function draw() {
     }
     if (superMissiles && superMissiles.features) {
         superMissiles.features.forEach(item => drawItem(item, 'superMissile'));
+    }
+    
+    // Draw bosses and mini-bosses
+    if (bosses && bosses.features) {
+        bosses.features.forEach(boss => drawBoss(boss, false));
+    }
+    if (miniBosses && miniBosses.features) {
+        miniBosses.features.forEach(boss => drawBoss(boss, true));
     }
 }
 
