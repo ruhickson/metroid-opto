@@ -125,10 +125,29 @@ function drawItem(item, type) {
     const [x, y] = item.geometry.coordinates;
     const coords = transformCoords(x, y);
     
+    // Draw the item dot
     ctx.beginPath();
     ctx.arc(coords.x, coords.y, 3, 0, Math.PI * 2);
     ctx.fillStyle = COLORS.items[type] || '#fff';
     ctx.fill();
+    
+    // Add text label
+    ctx.font = '12px Arial';
+    ctx.fillStyle = '#fff';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    
+    let label = '';
+    if (type === 'major') {
+        // For major items, show the full name
+        label = item.properties.item;
+    } else {
+        // For other items, show the first letter
+        label = item.properties.item.charAt(0);
+    }
+    
+    // Draw the text slightly above the dot
+    ctx.fillText(label, coords.x, coords.y - 10);
 }
 
 // Check if a point is inside a polygon

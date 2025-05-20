@@ -7,6 +7,18 @@ var majorItems = {
     {
     "type": "Feature",
     "properties": {
+      "item": "Ship",
+      },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [6528,-960]
+    }},
+        
+//-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
+
+    {
+    "type": "Feature",
+    "properties": {
       "item": "MorphBall",
       },
     "geometry": {
