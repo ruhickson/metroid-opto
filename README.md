@@ -15,7 +15,7 @@ The route optimizer takes a CSV file containing the desired order of operations 
 
 ## Current Route Structure
 
-The route is defined in `route.js` and includes:
+The default route is defined in `route.js` and includes:
 - Starting point (Landing Site)
 - Sequence of rooms to visit
 - Specific positions within each room
